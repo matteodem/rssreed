@@ -7,7 +7,6 @@
 
 
 /* Only has custom styles because the content can be dynamic (RSS) */
-.description img,
-.description a {
+.description img {
     display: none;
 }
