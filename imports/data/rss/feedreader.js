@@ -5,8 +5,6 @@ import { collection as itemCollection } from '../collections/item'
 const readers = []
 const intervalInMinutes = 10
 
-// TODO: output endpoint url to item
-
 const createReader = (id, readerUrl) => {
   const reader = new FeedSub(readerUrl, {
     interval: intervalInMinutes,
@@ -29,6 +27,8 @@ const createReader = (id, readerUrl) => {
       })
     })
   }))
+
+  reader.on('error', err => console.log(err))
 
   removeItems()
 
