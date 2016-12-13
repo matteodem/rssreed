@@ -37,17 +37,22 @@
 
 <template name="list">
   {{#each item}}
-    <div class="mb5 mw7">
+    <div class="mb5 mw7 item">
       <div class="f3 lh-title">
         <a href="{{link}}" target="_blank" class="link dark-blue dim">{{title}}</a>
       </div>
 
       <div class="f6 fw3 mv3">
-        <div class="dib published-date mr2 pa1">
+        <div class="dib published-date mr2">
           <span>{{formattedPublishDate}}</span>
         </div>
+
+        <div class="dib tag mr2 silver">
+          {{formattedEndpoint}}
+        </div>
+
         {{#each tags}}
-          <div class="dib tag mr2 pa1 silver">{{this}}</div>
+          <div class="dib tag mr2 silver">{{this}}</div>
         {{/each}}
       </div>
 

@@ -55,7 +55,13 @@ Template.list.onCreated(function listOnCreated() {
 
 Template.list.helpers({
   formattedPublishDate() {
-    return moment(this.publishDate).format('D MMMM YYYY, H:mm:ss')
+    return moment(this.publishDate).format('D.MM.YYYY, H:mm:ss')
+  },
+  formattedEndpoint() {
+    return this.readerUrl
+      .replace(/http(s)?:\/\/(www\.)?/, '')
+      .replace(/\?.+/, '')
+    ;
   },
   item() {
     return itemCollection.find({}, {
