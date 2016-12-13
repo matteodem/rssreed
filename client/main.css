@@ -1,0 +1,13 @@
+#app {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.cpoi { cursor: pointer; }
+
+
+/* Only has custom styles because the content can be dynamic (RSS) */
+.description img,
+.description a {
+    display: none;
+}

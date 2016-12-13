@@ -1,0 +1,63 @@
+<head>
+  <title>rssreader</title>
+</head>
+
+<body>
+  <div id="app" class="bg-white">
+    <div class="helvetia f5 pa3">
+      <h1 class="f-headline-l lh-title mv3">rssreader</h1>
+
+      {{> endpoints}}
+      <div class="mt3">
+        {{> list}}
+      </div>
+    </div>
+  </div>
+</body>
+
+<template name="endpoints">
+  <div class="f3 toggle-endpoints-list cpoi">
+    <i class="{{toggleButtonClass}}"></i>
+  </div>
+
+  {{#if showEndpointsList}}
+    <div class="mv3">
+      <div class="mv2">
+        <input class="rss-endpoint" type="text" placeholder="Add RSS Endpoint" />
+      </div>
+
+      <div>
+        {{#each endpoint}}
+          <div class="mv2">{{url}} <div class="dib cpoi remove-endpoint">(Remove)</div></div>
+        {{/each}}
+      </div>
+    </div>
+  {{/if}}
+</template>
+
+<template name="list">
+  {{#each item}}
+    <div class="mb5 mw7">
+      <div class="f3 lh-title">
+        <a href="{{link}}" target="_blank" class="link dark-blue dim">{{title}}</a>
+      </div>
+
+      <div class="f6 fw3 mv3">
+        <div class="dib published-date mr2 pa1">
+          <span>{{formattedPublishDate}}</span>
+        </div>
+        {{#each tags}}
+          <div class="dib tag mr2 pa1 silver">{{this}}</div>
+        {{/each}}
+      </div>
+
+      <div class="description lh-copy">{{{description}}}</div>
+    </div>
+  {{/each}}
+
+  {{#if showLoadMore}}
+    <div>
+      <div class="dib load-more cpoi mv3 pa2 pa0 bg-navy white">Load more</div>
+    </div>
+  {{/if}}
+</template>
