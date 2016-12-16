@@ -1,4 +1,5 @@
 import 'tachyons/css/tachyons.css'
+import 'purecss/build/pure.css'
 import moment from 'moment'
 import { Meteor } from 'meteor/meteor'
 import { ReactiveVar } from 'meteor/reactive-var'
@@ -10,11 +11,20 @@ import './main.html'
 
 Meteor.subscribe('initialData')
 
-const showEndpoints = ReactiveVar(false)
+let showEndpoints = ReactiveVar(false)
+
+Template.endpoints.onRendered(function () {
+  this.autorun(() => {
+    showEndpoints.set(rssCollection.find().count() === 0)
+  })
+})
 
 Template.endpoints.helpers({
   endpoint() {
     return rssCollection.find()
+  },
+  noEndpoint() {
+    return rssCollection.find().count() === 0
   },
   showEndpointsList() {
     return showEndpoints.get()
@@ -45,11 +55,11 @@ Template.endpoints.events({
 })
 
 let itemsLoaded = new ReactiveVar(10)
-let totalItemCount = 1000000
+let totalItemCount = new ReactiveVar(0)
 
 Template.list.onCreated(function listOnCreated() {
   Meteor.call('getItemsCount', (err, count) => {
-    totalItemCount = count
+    totalItemCount.set(count)
   })
 })
 
@@ -69,14 +79,13 @@ Template.list.helpers({
     })
   },
   showLoadMore() {
-    return itemsLoaded.get() < totalItemCount
+    return itemsLoaded.get() < totalItemCount.get()
   }
 })
 
 Template.list.events({
   'click .load-more': function () {
     itemsLoaded.set(itemsLoaded.get() + 20)
-    console.log(itemsLoaded.get())
     Meteor.subscribe('additionalItems', itemsLoaded.get())
   },
 })

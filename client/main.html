@@ -7,10 +7,29 @@
     <div class="helvetia f5 pa3">
       <h1 class="f-headline-l lh-title mv3">rssreader</h1>
 
-      {{> endpoints}}
-      <div class="mt3">
-        {{> list}}
-      </div>
+      {{#if Template.subscriptionsReady}}
+        {{#if currentUser}}
+          <div class="pure-g">
+            <div class="pure-u-2-3">
+              {{> endpoints}}
+            </div>
+
+            <div class="pure-u-1-3" style="margin-top: 6px">
+              <div class="fr">{{> loginButtons}}</div>
+            </div>
+          </div>
+
+          <div class="mt3">
+            {{> list}}
+          </div>
+        {{else}}
+          <div class="mv3">{{> loginButtons}}</div>
+
+          <div class="mt3">
+            <p class="f-headline f3 measure lh-copy">Want to aggregate news from your favorite websites over RSS? Sign in or <a href="">host</a> your own version.</p>
+          </div>
+        {{/if}}
+      {{/if}}
     </div>
   </div>
 </body>
@@ -21,14 +40,17 @@
   </div>
 
   {{#if showEndpointsList}}
-    <div class="mv3">
+    <div class="pa3 bg-light-gray black">
+      {{#if noEndpoint}}
+      <p class="lh-copy">Add an RSS endpoint to start aggregating your news.</p>
+      {{/if}}
       <div class="mv2">
         <input class="rss-endpoint" type="text" placeholder="Add RSS Endpoint" />
       </div>
 
       <div>
         {{#each endpoint}}
-          <div class="mv2">{{url}} <div class="dib cpoi remove-endpoint">(Remove)</div></div>
+          <div class="mv3">{{url}} <div class="dib cpoi remove-endpoint">(Remove)</div></div>
         {{/each}}
       </div>
     </div>

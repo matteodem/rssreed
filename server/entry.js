@@ -6,42 +6,57 @@ import { collection as rssResourceCollection } from '../imports/data/collections
 
 import { createReader, resetReader } from '../imports/data/rss/feedreader'
 
+const generateId = (id, userId) => `${id}_${userId}`
+
 Meteor.methods({
   addRSSResource(url) {
     check(url, String)
 
-    const id = rssResourceCollection.insert({
-      url,
-    })
+    const userId = Meteor.userId()
 
-    createReader(id, url)
+    if (userId) {
+      const id = rssResourceCollection.insert({
+        url,
+        userId,
+      })
+
+      createReader(generateId(id, userId), userId, url)
+    }
   },
   removeRSSResource(_id) {
     check(_id, String)
 
-    rssResourceCollection.remove({ _id })
-    resetReader(_id)
+    const userId = Meteor.userId()
+
+    if (userId) {
+      rssResourceCollection.remove({ _id, userId })
+      resetReader(generateId(_id, userId))
+    }
   },
   getItemsCount() {
-    return itemCollection.find().count()
+    const userId = Meteor.userId()
+
+    return itemCollection.find({ userId }).count()
   }
 })
 
-const getSortedItems = limit => itemCollection.find({}, { sort: { publishDate: -1 }, limit })
+const getSortedItems = (userId, limit) => itemCollection.find(
+  { userId },
+  { sort: { publishDate: -1 }, limit }
+)
 
-Meteor.publish('initialData', () => [
-  getSortedItems(10),
-  rssResourceCollection.find(),
-])
+Meteor.publish('initialData', function () {
+  const userId = this.userId
 
-Meteor.publish('additionalItems', count => {
-  check(count, Number)
-  return getSortedItems(count)
+  return [
+    getSortedItems(userId, 10),
+    rssResourceCollection.find({
+      userId,
+    }),
+  ]
 })
 
-Meteor.startup(() => {
-  rssResourceCollection
-    .find()
-    .fetch()
-    .forEach(d => createReader(d._id, d.url))
+Meteor.publish('additionalItems', function (count) {
+  check(count, Number)
+  return getSortedItems(this.userId, count)
 })

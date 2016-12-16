@@ -5,13 +5,13 @@ import { collection as itemCollection } from '../collections/item'
 const readers = []
 const intervalInMinutes = 10
 
-const createReader = (id, readerUrl) => {
+const createReader = (id, userId, readerUrl) => {
   const reader = new FeedSub(readerUrl, {
     interval: intervalInMinutes,
     emitOnStart: true,
   })
 
-  const removeItems = () => itemCollection.remove({ readerUrl })
+  const removeItems = () => itemCollection.remove({ readerUrl, userId })
 
   reader.on('items', Meteor.bindEnvironment(items => {
     items.forEach(item => {
@@ -19,6 +19,7 @@ const createReader = (id, readerUrl) => {
 
       itemCollection.insert({
         readerUrl,
+        userId,
         title,
         link,
         description,
